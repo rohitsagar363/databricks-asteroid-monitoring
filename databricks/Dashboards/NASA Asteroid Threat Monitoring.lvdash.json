@@ -1,0 +1,359 @@
+{
+  "datasets": [
+    {
+      "name": "94d5a3a4",
+      "displayName": "Asteroid Summary Data",
+      "queryLines": [
+        "SELECT * FROM nasa_project.gold.daily_summary ORDER BY date DESC"
+      ]
+    },
+    {
+      "name": "f4472ebf",
+      "displayName": "Daily Asteroid Threat Summary",
+      "queryLines": [
+        "SELECT \n",
+        "  date,\n",
+        "  total_asteroids,\n",
+        "  hazardous_count,\n",
+        "  avg_miss_km,\n",
+        "  closest_approach_km,\n",
+        "  max_asteroid_size_km\n",
+        "FROM \n",
+        "  nasa_project.gold.daily_summary"
+      ],
+      "catalog": "nasa_project",
+      "schema": "gold"
+    }
+  ],
+  "pages": [
+    {
+      "name": "76514918",
+      "displayName": "Asteroid Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-asteroids-tracked-last-7-days",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f4472ebf",
+                  "fields": [
+                    {
+                      "name": "sum(total_asteroids)",
+                      "expression": "SUM(`total_asteroids`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Asteroids Tracked",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_asteroids)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 5,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "daily-threat-activity-area",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "94d5a3a4",
+                  "fields": [
+                    {
+                      "name": "hazardous_count",
+                      "expression": "`hazardous_count`"
+                    },
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "total_asteroids",
+                      "expression": "`total_asteroids`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Daily Threat Activity",
+                "showTitle": true
+              },
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "date",
+                  "displayName": "Date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "total_asteroids",
+                  "displayName": "Total Asteroids",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "hazardous_count",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Hazardous",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 9,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "daily-threat-insight-text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "**Insight:** This chart highlights the daily volume of asteroids and visually distinguishes the hazardous minority from the safe majority. Most days show only a small number of hazardous objects compared to the total, emphasizing the rarity of significant threats."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 9,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "impact-risk-scatter",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "94d5a3a4",
+                  "fields": [
+                    {
+                      "name": "hazardous_count",
+                      "expression": "`hazardous_count`"
+                    },
+                    {
+                      "name": "avg_miss_km",
+                      "expression": "`avg_miss_km`"
+                    },
+                    {
+                      "name": "max_asteroid_size_km",
+                      "expression": "`max_asteroid_size_km`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Impact Risk Scatter Plot",
+                "showTitle": true
+              },
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg_miss_km",
+                  "displayName": "Proximity (avg_miss_km)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "max_asteroid_size_km",
+                  "displayName": "Power (max_asteroid_size_km)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "hazardous_count",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Hazardous Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 11,
+            "width": 9,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "scatter-plot-insight",
+            "multilineTextboxSpec": {
+              "lines": [
+                "### Impact Risk Scatter Plot Insight\n",
+                "\n",
+                "This scatter plot visualizes asteroid impact risk scores, highlighting outliers with elevated threat levels. Use this chart to quickly identify asteroids that require further investigation or immediate response."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 9,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "global_filters",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "date-filter",
+            "queries": [
+              {
+                "name": "dashboards/01f11cf4382c1c0e905011e7a6b2f7be/datasets/01f11cf4382c1c878f94e64f191daf4d_daily(date)",
+                "query": {
+                  "datasetName": "94d5a3a4",
+                  "fields": [
+                    {
+                      "name": "daily(date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `date`)"
+                    },
+                    {
+                      "name": "daily(date)_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f11cf4382c1c0e905011e7a6b2f7be/datasets/01f11cf4382c1c91a1d2e962fe449064_daily(date)",
+                "query": {
+                  "datasetName": "f4472ebf",
+                  "fields": [
+                    {
+                      "name": "daily(date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `date`)"
+                    },
+                    {
+                      "name": "daily(date)_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Date Filter",
+                "showTitle": true
+              },
+              "widgetType": "filter-date-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "daily(date)",
+                    "displayName": "DAILY(date)",
+                    "queryName": "dashboards/01f11cf4382c1c0e905011e7a6b2f7be/datasets/01f11cf4382c1c878f94e64f191daf4d_daily(date)"
+                  },
+                  {
+                    "fieldName": "daily(date)",
+                    "displayName": "DAILY(date)",
+                    "queryName": "dashboards/01f11cf4382c1c0e905011e7a6b2f7be/datasets/01f11cf4382c1c91a1d2e962fe449064_daily(date)"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#F5F7FA",
+        "dark": "#1A1D21"
+      },
+      "widgetBackgroundColor": {
+        "light": "#FFFFFF",
+        "dark": "#23272B"
+      },
+      "widgetBorderColor": {
+        "light": "#D1D5DB",
+        "dark": "#2D3238"
+      },
+      "fontColor": {
+        "light": "#1A1D21",
+        "dark": "#F5F7FA"
+      },
+      "selectionColor": {
+        "light": "#1976D2",
+        "dark": "#90CAF9"
+      },
+      "visualizationColors": [
+        "#1976D2",
+        "#E53935",
+        "#43A047",
+        "#FBC02D",
+        "#8E24AA",
+        "#00897B"
+      ],
+      "widgetHeaderAlignment": "LEFT",
+      "fontFamily": "Arial"
+    },
+    "applyModeEnabled": false
+  }
+}

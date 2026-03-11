@@ -1,0 +1,20 @@
+{
+  "evaluation": {
+    "source": {
+      "name": "",
+      "display": "",
+      "aggregation": "AGGREGATION_UNSPECIFIED"
+    },
+    "comparison_operator": "EQUAL",
+    "threshold": {
+      "value": {
+        "string_value": "total_hazards > 0"
+      }
+    },
+    "notification": {}
+  },
+  "query_lines": [
+    "%sql",
+    "SELECT SUM(hazardous_count) as total_hazards FROM nasa_project.gold.daily_summary "
+  ]
+}
