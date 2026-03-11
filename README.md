@@ -7,42 +7,41 @@ A production-grade Medallion Architecture pipeline on Databricks, automating dai
 ## Project Overview
 This project implements an end-to-end data engineering lifecycle: from raw astronomical telemetry ingestion via the NASA NeoWs API to a professional Databricks SQL dashboard. It solves the challenge of handling complex, nested JSON data at scale while ensuring data reliability through incremental watermarking and Delta Lake MERGE operations.
 
+**API Reference:**  
+- [NASA NeoWs (Near Earth Object Web Service) API](https://api.nasa.gov/)  
+- [NeoWs API Documentation](https://api.nasa.gov/neo/)  
+- Example endpoint: `https://api.nasa.gov/neo/rest/v1/feed?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD&api_key=YOUR_KEY`
+
 ---
 
 ## Technical Architecture
 
-```
 NASA API (Source) --> Bronze Layer (Raw JSON - Append Only) ---> Silver Layer (Flattened & Cleaned - Delta Merge) ---> Gold Layer (Aggregated Metrics - Dashboard)
-```
-![Architecture Diagram](./architecture.png)  
+
+<img src="databricks/architecture.png" alt="Architecture Diagram" width="400"/>  
 ---
+## Usage Instructions
 
-## Tech Stack
+1. **Prerequisites:**
+   * Databricks Community Edition workspace (AWS)
+   * Unity Catalog permissions for data governance
+   * Python environment (for local API tests: `json`, `requests` libraries)
 
-| Component     | Technology                             |
-|-------------- |----------------------------------------|
-| Platform      | Databricks Community Edition (AWS)      |
-| Governance    | Unity Catalog                          |
-| Storage       | Delta Lake                             |
-| Processing    | PySpark, Python (`json`, `requests`)    |
-| Orchestration | Databricks Workflows                    |
-| Visualization | Databricks SQL Dashboards               |
+2. **Setup:**
+   * Clone this repo into Databricks using the "Repos" feature.
+   * Upload sample images (from `/databricks/` folder) for visuals if you wish to replicate screenshots.
 
----
+3. **Pipeline Execution:**
+   * Run the provided notebooks starting from Bronze Ingestion → Silver Transformation → Gold Aggregation.
+   * Trigger Databricks Workflow (/Job) for daily end-to-end automation.
+   * Check watermark columns to ensure incremental ingestion.
 
-## Key Engineering Challenges
+4. **Dashboard Access:**
+   * Open "NASA Asteroid Threat Monitoring" dashboard in Databricks SQL.
+   * Filter results by date or other threat metrics.
 
-* **Serverless RDD Limitations:** Overcame Databricks Serverless compute restrictions (RDD/SparkContext limitations) by refactoring JSON parsing to a Python-native dictionary flattening method.
-* **Incremental Data Integrity:** Implemented a Watermark-based strategy to prevent duplicate API ingestion, ensuring that only new rows from Bronze are processed each day.
-* **Schema Evolution:** Handled dynamic NASA API keys (dated dictionaries) by flattening them into a consistent tabular format in the Silver layer.
+5. **Troubleshooting:**
+   * Review error logs in the notebook output or Databricks Job UI.
+   * For API schema changes, update Silver layer transformation logic and watermarking.
 
----
-
-## Proof of Success
-
-* **Workflow Success:**
-  * ![Workflow Success](./workflow_success.png).
-
-* **Dashboard Visualization:**
-  * ![Dashboard View](./dashboard.png).
 ---
